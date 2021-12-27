@@ -1,0 +1,27 @@
+### Create Cart
+POST http://localhost:1984/carts/b050ff5b-0c6d-43cc-b68d-957604a70d09/create-user-cart
+Content-Type: application/json
+
+{}
+
+### GET Cart
+GET http://localhost:1984/carts/b050ff5b-0c6d-43cc-b68d-957604a70d09
+Content-Type: application/json
+
+### Add Product
+POST http://localhost:1984/carts/b050ff5b-0c6d-43cc-b68d-957604a70d09/add-product
+Content-Type: application/json
+
+{
+  "productId": "f4ee3e88-fb19-43d5-866d-447a57ef8e0f",
+  "productInfo": {
+    "sku": "THE SKU TAL", 
+    "name": "Some Product",
+    "price": 1234
+  },
+  "quantity": 1
+}
+
+
+###
+GET http://localhost:1984/domain

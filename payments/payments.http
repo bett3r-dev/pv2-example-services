@@ -1,0 +1,4 @@
+POST http://localhost:1984/payments/b050ff5b-0c6d-43cc-b68d-957604a70d09/start-payment
+Content-Type: application/json
+
+{}

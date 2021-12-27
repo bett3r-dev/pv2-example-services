@@ -1,0 +1,15 @@
+### Create Product
+POST http://localhost:1984/products/f4ee3e88-fb19-43d5-866d-447a57ef8e0f/create-product
+Content-Type: application/json
+
+{
+  "sku": "THE SKU TAL",
+  "name": "Some Product",
+  "price": 1234,
+  "quantity": 500
+}
+
+### get products
+
+GET http://localhost:1984/user-carts/readmodel/fd4594e0-e708-4e08-969f-ec3a43471d87
+Content-Type: application/json

@@ -1,0 +1,10 @@
+import { CartCommands, PaymentEvents } from '@bett3r-dev/pv2-example-domain';
+import { AppServiceParams } from 'src/types';
+import { CartsAggregate } from './carts.aggregate';
+import { PurchaseApprovedPolicy } from './purchaseApproved.policy';
+
+export function create(params: AppServiceParams) {
+  const { serverComponents, u } = params;
+  serverComponents.eventsourcing.routeAggregate(CartsAggregate(params), CartCommands);
+  serverComponents.eventsourcing.routePolicy(PurchaseApprovedPolicy(params), PaymentEvents);
+}

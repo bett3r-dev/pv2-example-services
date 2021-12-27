@@ -1,0 +1,21 @@
+POST http://localhost:1984/users/a65c1ed9-da8a-45f2-9a8c-35daf3747b6b
+Content-Type: application/json
+
+{
+  "name": "name",
+  "lastName": "lastName",
+  "mail": "mail",
+  "address": "address"
+}
+
+###
+GET http://localhost:1984/users/a65c1ed9-da8a-45f2-9a8c-35daf3747b6b
+Content-Type: application/json
+
+###
+GET http://localhost:1984/users
+Content-Type: application/json
+
+###
+DELETE http://localhost:1984/users/a65c1ed9-da8a-45f2-9a8c-35daf3747b6b
+Content-Type: application/json
