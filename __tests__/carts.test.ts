@@ -9,7 +9,7 @@ const mockUpdate = jest.fn();
 const mockCreate = jest.fn();
 const mockDestroy = jest.fn();
 
-describe('description', () => {
+describe.skip('happy path integration test', () => {
   let serverComponents: AppServerComponents;
 
   beforeAll((done) => {
@@ -33,10 +33,7 @@ describe('description', () => {
       })
       .fork(u.I, u.I)
   })
-  it('description', () => {
-    // console.log(serverComponents.configuration.getConfig());
-    // console.log(serverComponents);
-    // expect(true).toBeTruthy();
+  it.skip('happy path', () => {
     const es = serverComponents.eventsourcing;
     es.executeCommand(CartsAggregate({serverComponents, u}), CartCommands.CreateUserCart)({
       params:{id:'438b476c-3a1e-45bc-bb43-c5c33798bd2c'},
