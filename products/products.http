@@ -9,6 +9,12 @@ Content-Type: application/json
   "quantity": 500
 }
 
+### Create Product
+POST http://localhost:1984/products/f4ee3e88-fb19-43d5-866d-447a57ef8e0f/update-stock
+Content-Type: application/json
+
+700
+
 ### get products
 
 GET http://localhost:1984/products/f4ee3e88-fb19-43d5-866d-447a57ef8e0f
