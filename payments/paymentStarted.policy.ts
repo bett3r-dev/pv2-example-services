@@ -4,7 +4,7 @@ import { Policy } from '@bett3r-dev/server-core';
 import { AppServiceParams } from 'src/types';
 import { PaymentGatewaySystem } from './paymentGateway.system';
 
-export const PaymentStartedPolicy = (params: AppServiceParams) : Policy<Pick<typeof PaymentEvents, 'PaymentStarted'>> => {
+export const PaymentStartedPolicy = (params: AppServiceParams) : Policy<typeof PaymentEvents> => {
   const {serverComponents, u} = params;
   const {eventsourcing: {createCommand}} = serverComponents;
 
