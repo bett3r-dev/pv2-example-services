@@ -11,5 +11,5 @@ Content-Type: application/json
 
 ### get products
 
-GET http://localhost:1984/user-carts/readmodel/fd4594e0-e708-4e08-969f-ec3a43471d87
+GET http://localhost:1984/products/f4ee3e88-fb19-43d5-866d-447a57ef8e0f
 Content-Type: application/json
