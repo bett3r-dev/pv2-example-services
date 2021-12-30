@@ -67,7 +67,7 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
             constant(createError(CartErrors.CartAlreadyExist, [params.id])),
             constant({events:[createEvent(CartEvents.UserCartCreated, null)]})
           ),
-
+      //TODO: Validate cart exists
       AddProduct: (state, data) =>
         u.safeAsync(isNil, u.propPath(['products', data.productId], state))
           .bimap(constant(createError(CartErrors.ProductAlreadyInCart, [data.productId])), u.I)
@@ -76,7 +76,7 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
               .chain(readAndValidateStockProducts(ErrorValidationMap))
               .map(constant({events:[createEvent(CartEvents.ProductAdded, data)]}))
           ),
-
+      //TODO: Validate cart exists
       UpdateQuantity: ({state}, data) =>
         validateProductInCart(state, data.productId)
           .map(constant(data))
@@ -93,12 +93,12 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
                 .map(constant({events:[createEvent(CartEvents.QuantityUpdated, data)]} as CommandHandlerResponse))
             ]
           ])),
-
+      //TODO: Validate cart exists
       RemoveProduct: ({state}, data) =>
         validateProductInCart(state, data)
           .map(constant({events:[createEvent(CartEvents.ProductRemoved, {productId: data})]})),
 
-
+      //TODO: Validate cart exists & EmptyCart
       CloseCart: () =>
         Async.of({events:[createEvent(CartEvents.CartClosed, null)]}),
     }
