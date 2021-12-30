@@ -55,7 +55,7 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
     eventReducers: {
       UserCartCreated: () => ({}),
       ProductAdded: (state, data) => u.assocPath(['products', data.productId], data, state),
-      QuantityUpdated: (state, data, metadata) => u.assocPath(['products', data.productId, 'quantity'], data.quantity, state),
+      QuantityUpdated: (state, data) => u.assocPath(['products', data.productId, 'quantity'], data.quantity, state),
       ProductRemoved: (state, data) => u.dissocPath(['products', data.productId], state),
       CartClosed: (state) => ({...state, isClosed: true}),
     },
