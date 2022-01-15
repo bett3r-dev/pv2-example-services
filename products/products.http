@@ -1,6 +1,7 @@
 ### Create Product
 POST http://localhost:1984/products/f4ee3e88-fb19-43d5-866d-447a57ef8e0f/create-product
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbWFzcnVpenIiLCJpYXQiOjE2NDIyODQ0NzJ9.X-8dFZm6NNranIBr812-T9wbfwi8_bwvSAKwwSRoD5Y
 
 {
   "sku": "THE SKU TAL",
