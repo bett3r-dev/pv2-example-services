@@ -11,7 +11,7 @@ export function create(params: AppServiceParams) {
     route: '/user-payments/readmodel/:id',
     name: 'user payments readmodel',
     description: 'get user payment',
-    isPublic: true,
+    requiresAuth: false,
     action: ({body, query, params}) =>{
       return mongo
         .getCollection('user-payments')

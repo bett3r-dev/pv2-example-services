@@ -11,7 +11,7 @@ export function create(params: AppServiceParams) {
     route: '/products/readmodel/:id',
     name: 'products readmodel',
     description: 'get product',
-    isPublic: true,
+    requiresAuth: false,
     action: ({body, query, params}) =>{
       return mongo
         .getCollection('products')
@@ -24,7 +24,7 @@ export function create(params: AppServiceParams) {
     route: '/products/readmodel',
     name: 'products readmodel',
     description: 'get all products',
-    isPublic: true,
+    requiresAuth: false,
     isHttp: true,
     action: ({body, query, params}) =>{
       return mongo

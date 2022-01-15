@@ -11,7 +11,7 @@ export function create(params: AppServiceParams) {
     route: '/user-carts/readmodel/:id',
     name: 'user carts readmodel',
     description: 'get user cart',
-    isPublic: true,
+    requiresAuth: false,
     isHttp: true,
     action: ({body, query, params}) =>{
       return mongo

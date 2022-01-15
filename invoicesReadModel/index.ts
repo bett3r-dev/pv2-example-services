@@ -13,7 +13,7 @@ export function create(params: AppServiceParams) {
     description: 'Reads Invoices',
     route: '/invoices',
     method: 'GET',
-    isPublic: true,
+    requiresAuth: false,
     isHttp: true,
     action: ({ params, query }) =>
       mongo.getCollection('invoices').read({...params, ...query})
