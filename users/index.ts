@@ -1,10 +1,10 @@
-import { Async, constant } from '@bett3r-dev/crocks';
+import { constant } from '@bett3r-dev/crocks';
 import { UserModel } from '@bett3r-dev/pv2-example-domain';
 import { EndpointAction } from '@bett3r-dev/server-core';
-import {AppServiceParams} from 'src/types';
+import { AppServiceParams } from 'src/types';
 
 export function create(params: AppServiceParams) {
-  const {serverComponents: {endpoint, database}, u} = params;
+  const {serverComponents: {endpoint, database, hook}, u} = params;
   const mongo = database.mongo;
 
   endpoint.registerEndpoint({
