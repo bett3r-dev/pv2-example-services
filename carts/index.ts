@@ -5,6 +5,6 @@ import { PurchaseApprovedPolicy } from './purchaseApproved.policy';
 
 export function create(params: AppServiceParams) {
   const { serverComponents, u } = params;
-  serverComponents.eventsourcing.routeAggregate(CartsAggregate(params), CartCommands);
+  serverComponents.eventsourcing.routeCommandHandler(CartsAggregate(params), CartCommands);
   serverComponents.eventsourcing.routePolicy(PurchaseApprovedPolicy(params), PaymentEvents);
 }

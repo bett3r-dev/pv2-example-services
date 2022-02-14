@@ -6,7 +6,7 @@ import { ProductsAggregate } from './products.aggregate';
 
 export function create(params: AppServiceParams) {
   const { serverComponents, u } = params;
-  serverComponents.eventsourcing.routeAggregate(ProductsAggregate(params), ProductCommands);
+  serverComponents.eventsourcing.routeCommandHandler(ProductsAggregate(params), ProductCommands);
   serverComponents.eventsourcing.routePolicy(PaymentRejectedPolicy(params), PaymentEvents)
   serverComponents.eventsourcing.routePolicy(PaymentStartedPolicy(params), PaymentEvents)
 }

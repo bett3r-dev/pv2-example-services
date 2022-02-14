@@ -10,11 +10,11 @@ export const UserPaymentsProjectors = (params: AppServiceParams) : Projector<typ
     name: 'UserPayments',
     eventProjectors: {
       PaymentStarted: (event) =>
-        mongo.getCollection('user-payments').upsert({id: event.metadata.id}, {$set: {status: 'new', ...event.data, lastEvent: event}}),
+        mongo.getCollection('user-payments').upsert({id: event.data.cartId}, {$set: {status: 'new', ...event.data, lastEvent: event}}),
       PaymentApproved: (event) =>
-        mongo.getCollection('user-payments').upsert({id: event.metadata.id}, {$set: {status: 'approved', lastEvent: event}}),
+        mongo.getCollection('user-payments').upsert({id: event.data.cartId}, {$set: {status: 'approved', lastEvent: event}}),
       PaymentRejected: (event) =>
-        mongo.getCollection('user-payments').upsert({id: event.metadata.id}, {$set: {status: 'rejected', reason: event.data.reason, lastEvent: event}}),
+        mongo.getCollection('user-payments').upsert({id: event.data.cartId}, {$set: {status: 'rejected', reason: event.data.reason, lastEvent: event}}),
     }
   })
 }

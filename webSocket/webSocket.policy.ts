@@ -22,7 +22,7 @@ export const WebSocketPolicy = (params: AppServiceParams): Policy<typeof Payment
     eventHandlers:{
      PaymentApproved: handleEvent,
      PaymentRejected: handleEvent,
-     InvoiceCreated: handleEvent
+     InvoiceCreated: handleEvent,
     }
   })
 };

@@ -2,7 +2,9 @@
 POST http://localhost:1984/carts/b050ff5b-0c6d-43cc-b68d-957604a70d09/create-user-cart
 Content-Type: application/json
 
-{}
+{
+  "userId": "199d7bf6-b713-48dc-a867-d9483dca89b2"
+}
 
 ### GET Cart
 GET http://localhost:1984/carts/b050ff5b-0c6d-43cc-b68d-957604a70d09
@@ -13,13 +15,22 @@ POST http://localhost:1984/carts/b050ff5b-0c6d-43cc-b68d-957604a70d09/add-produc
 Content-Type: application/json
 
 {
-  "productId": "f4ee3e88-fb19-43d5-866d-447a57ef8e0f",
+  "productId": "9686c5a9-7e59-4a0c-a363-47e799acda0a",
   "productInfo": {
     "sku": "THE SKU TAL", 
     "name": "Some Product",
     "price": 1234
   },
   "quantity": 1
+}
+
+### UpdateQuantity
+POST http://localhost:1984/carts/b050ff5b-0c6d-43cc-b68d-957604a70d09/update-quantity
+Content-Type: application/json
+
+{
+  "productId": "9686c5a9-7e59-4a0c-a363-47e799acda0a",
+  "quantity": 0
 }
 
 

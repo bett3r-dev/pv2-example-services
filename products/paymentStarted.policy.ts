@@ -13,11 +13,11 @@ export const PaymentStartedPolicy = (params: AppServiceParams) : Policy<typeof P
     commandHandler: ProductsAggregate(params),
     eventHandlers: {
       PaymentStarted: (event) =>
-          Async.of(Object.values(event.data.cart.products))
-            .map(u.map(({productId, quantity})=>({
-              id: productId,
-              command: createCommand(ProductCommands.DecreaseStock, {cartId: event.data.cartId, quantity})
-            })))
+        Async.of(Object.values(event.data.cart.products))
+          .map(u.map(({productId, quantity})=>({
+            id: productId,
+            command: createCommand(ProductCommands.DecreaseStock, {cartId: event.data.cartId, quantity})
+          })))
     }
   })
 }

@@ -1,7 +1,7 @@
 ### Create Product
-POST http://localhost:1984/products/f4ee3e88-fb19-43d5-866d-447a57ef8e0f/create-product
+POST http://localhost:1984/products/9686c5a9-7e59-4a0c-a363-47e799acda0a/create-product
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbWFzcnVpenIiLCJuYW1lIjoiTGEgZGF0YSBkZWwgdXNlciBxdWUgZXN0YW1vcyBhdW1lbnRhbmRvIiwiaWF0IjoxNjQyNDM3NDA1fQ._BUFnpehlZ5Y69Hr9s_DGipq0p1IP9tzRPXFTYCcJRw
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbWFzcnVpenIiLCJpYXQiOjE2NDQyNjg5MTAsImV4cCI6MTY0NDM1NTMxMH0.MwpZPlgs7F5WVofwTgJ8AquB-5suOx3muB4MHWZHFTWjdFtWXBcq-q13m3XEQxfeYqMBX9O3ST1jPqWVCxPz-w
 
 {
   "sku": "THE SKU TAL",

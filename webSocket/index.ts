@@ -14,6 +14,6 @@ export const WebSocketCommands = { PublishMessage }
 export function create(params: AppServiceParams) {
   const {serverComponents: {eventsourcing}} = params;
 
-  eventsourcing.routeSystems(WebSocket(params), {PublishMessage});
+  eventsourcing.routeCommandHandler(WebSocket(params), {PublishMessage});
   eventsourcing.routePolicy(WebSocketPolicy(params), Object.assign({}, PaymentEvents, InvoiceEvents));
 }

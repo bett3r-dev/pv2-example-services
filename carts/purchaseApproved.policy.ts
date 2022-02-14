@@ -14,8 +14,8 @@ export const PurchaseApprovedPolicy = (params: AppServiceParams) : Policy<Pick<t
     eventHandlers: {
       PaymentApproved: (event) =>
           Async.of({
-              id: event.metadata.id,
-              command: createCommand(CartCommands.CloseCart, event.data)
+              id: event.data.cartId,
+              command: createCommand(CartCommands.CloseCart, null)
           })
     }
   })

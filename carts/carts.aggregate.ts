@@ -53,7 +53,7 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
   return ({
     name: 'Carts',
     eventReducers: {
-      UserCartCreated: () => ({}),
+      UserCartCreated: (_, data) => data,
       ProductAdded: (state, data) => u.assocPath(['products', data.productId], data, state),
       QuantityUpdated: (state, data) => u.assocPath(['products', data.productId, 'quantity'], data.quantity, state),
       ProductRemoved: (state, data) => u.dissocPath(['products', data.productId], state),
@@ -65,7 +65,7 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
         u.safeAsync(isEmpty, state)
           .bimap(
             constant(createError(CartErrors.CartAlreadyExist, [params.id])),
-            constant({events:[createEvent(CartEvents.UserCartCreated, null)]})
+            constant({events:[createEvent(CartEvents.UserCartCreated, data)]})
           ),
 
       AddProduct: (state, data) =>
@@ -84,9 +84,9 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
             [data => data.quantity < 0, constant(Async.Rejected(
               createError(CartErrors.NegativeQuantity, [data.productId])
             ))],
-            [data => data.quantity === 0, constant(Async.of({
-              events:[createEvent(CartEvents.QuantityUpdated, data), createEvent(CartEvents.ProductRemoved, u.pick(['productId'], data))]
-            }))],
+            [data => data.quantity === 0, constant(Async.of(
+             [createEvent(CartEvents.QuantityUpdated, data), createEvent(CartEvents.ProductRemoved, u.pick(['productId'], data))]
+            ))],
             [u.T, ()=>
               Async.of(data)
                 .chain(readAndValidateStockProducts(u.pick(['ProductOutOfStock'], ErrorValidationMap)))
