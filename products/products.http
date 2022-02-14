@@ -9,11 +9,11 @@ Content-Type: application/json
   "quantity": 500
 }
 
-### Create Product
+### Update Stock
 POST http://localhost:1984/products/f4ee3e88-fb19-43d5-866d-447a57ef8e0f/update-stock
 Content-Type: application/json
 
-700
+900
 
 ### get products
 
