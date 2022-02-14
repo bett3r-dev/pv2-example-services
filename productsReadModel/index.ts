@@ -12,7 +12,7 @@ export function create(params: AppServiceParams) {
     name: 'products readmodel',
     description: 'get product',
     isPublic: true,
-    action: ({body, query, params}) =>{
+    action: ({body, query, params}) => {
       return mongo
         .getCollection('products')
         .read({...query, ...params})

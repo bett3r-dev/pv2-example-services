@@ -8,16 +8,16 @@ export const ProductsProjectors = (params: AppServiceParams) : Projector<typeof 
   const updateStock = (event: CommittedEvent<number>) =>
     mongo
       .getCollection('products')
-      .update({id: event.metadata.id}, {$set: { quantity: event.data , lastEvent: event}});
+      .upsert({id: event.metadata.id}, {$set: { quantity: event.data , lastEvent: event}});
 
   const restoreStock = (event: CommittedEvent<number>) =>
       mongo
         .getCollection('products')
-        .update({id: event.metadata.id}, {$inc: { quantity: +event.data }});
+        .upsert({id: event.metadata.id}, {$inc: { quantity: +event.data }});
   const decreaseStock = (event: CommittedEvent<number>) =>
       mongo
         .getCollection('products')
-        .update({id: event.metadata.id}, {$inc: { quantity: -event.data }});
+        .upsert({id: event.metadata.id}, {$inc: { quantity: -event.data }});
 
 
   return ({

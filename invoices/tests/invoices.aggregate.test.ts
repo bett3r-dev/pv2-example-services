@@ -20,17 +20,59 @@ describe('InvoicesAggregate', () => {
   })
 
   describe('CreateInvoice', () => {
-    //TODO: de aca para abajop
     it('Given no previous events, when CreateInvoice then InvoiceCreated', done => {
-      // es.testAggregate(InvoicesAggregate(params))
-      //   .given([], '5832ac10-8efd-4d15-ac14-f70e802a6b2c')
-      //   .when(InvoiceCommands.CreateUserInvoice, null)
-      //   .then({events:[es.createCommittedEvent(
-      //     InvoiceEvents.UserInvoiceCreated, null)], state:{}})
-      //   .fork(done, () => done())
+      es.testAggregate(InvoicesAggregate(params))
+        .given([])
+        .when(InvoiceCommands.CreateInvoice, {
+          userId: "385c5970-9716-4093-8021-713c15729fff",
+          products: {
+            "171e36dd-6cef-468a-8d83-778301f6d554":{
+              productId:"fb1b5b61-5eb2-48f3-88e6-10833b9d8a8a",
+              productInfo: {
+                sku: "sku",
+                name: "product",
+                price: 100
+              },
+              quantity: 1
+            }
+          },
+          total: 1000,
+          address: "address"
+        })
+        .then({events:[es.createCommittedEvent(
+          InvoiceEvents.InvoiceCreated, {
+            userId: "385c5970-9716-4093-8021-713c15729fff",
+            products: {
+              "171e36dd-6cef-468a-8d83-778301f6d554":{
+                productId:"fb1b5b61-5eb2-48f3-88e6-10833b9d8a8a",
+                productInfo: {
+                  sku: "sku",
+                  name: "product",
+                  price: 100
+                },
+                quantity: 1
+              }
+            },
+            total: 1000,
+            address: "address"
+          })], state:{
+            userId: "385c5970-9716-4093-8021-713c15729fff",
+            products: {
+              "171e36dd-6cef-468a-8d83-778301f6d554":{
+                productId:"fb1b5b61-5eb2-48f3-88e6-10833b9d8a8a",
+                productInfo: {
+                  sku: "sku",
+                  name: "product",
+                  price: 100
+                },
+                quantity: 1
+              }
+            },
+            total: 1000,
+            address: "address"
+          }})
+        .fork(done, () => done())
     });
-
-
 
   });
 });

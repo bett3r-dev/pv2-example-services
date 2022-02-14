@@ -10,7 +10,7 @@ export const ProductsAggregate = ({serverComponents, u}: AppServiceParams) : Agg
     eventReducers: {
       ProductCreated: (state, data) => ({...state, ...data}),
       StockUpdated: (state, data) => ({...state, quantity: data}),
-      ProductDeleted: () => null,
+      ProductDeleted: () => (null),
       StockDecreased: (state, data) => ({...state, quantity: state.quantity - data}),
       StockRestored: (state, data) => ({...state, quantity: state.quantity + data}),
     },
@@ -34,12 +34,13 @@ export const ProductsAggregate = ({serverComponents, u}: AppServiceParams) : Agg
           ? Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
           : Async.of({events:[createEvent(ProductEvents.ProductDeleted, null)]}),
       DecreaseStock: (state, data,{params}) => {
-        if (!state) return Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
+        console.log('state', state)
+        if (!state || !state?.state) return Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
         if (state.state.quantity - data.quantity < 0) Async.Rejected(createError(ProductErrors.NegativeQuantity, [params.id]))
         return Async.of({events:[createEvent(ProductEvents.StockDecreased, data.quantity)]})
       },
       RestoreStock: (state, data,{params}) => {
-        if (!state) return Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
+        if (!state || !state?.state) return Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
         return Async.of({events:[createEvent(ProductEvents.StockRestored, data.quantity)]})
       },
     }

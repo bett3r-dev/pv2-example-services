@@ -1,5 +1,5 @@
 import { Async, constant, isDefined } from '@bett3r-dev/crocks';
-import { CartErrors, CartModel, PaymentCommands, PaymentEvents, PaymentModel } from '@bett3r-dev/pv2-example-domain';
+import { CartErrors, CartModel, PaymentCommands, PaymentErrors, PaymentEvents, PaymentModel } from '@bett3r-dev/pv2-example-domain';
 import { Aggregate, createError } from '@bett3r-dev/server-core';
 import { AppServiceParams } from 'src/types';
 
@@ -9,7 +9,7 @@ export const PaymentsAggregate = ({serverComponents, u}: AppServiceParams) : Agg
   return ({
     name: 'Payments',
     eventReducers: {
-      PaymentStarted: (state) => state,
+      PaymentStarted: (state, data) => ({...state, ...data}),
       PaymentApproved: (state) => ({...state, status: 'approved'}),
       PaymentRejected: (state) => ({...state, status: 'rejected'}),
     },
@@ -24,10 +24,14 @@ export const PaymentsAggregate = ({serverComponents, u}: AppServiceParams) : Agg
               ? Async.of({events:[createEvent(PaymentEvents.PaymentStarted, {cartId: params.id, cart, amount: u.getCartTotal(cart)})]})
               : Async.Rejected(createError(CartErrors.EmptyCart, null))
           }),
-      ApprovePayment: (state, data) =>
-        Async.of({events:[createEvent(PaymentEvents.PaymentApproved, {cartId: data.cartId})]}),
-      RejectPayment: (state, data) =>
-        Async.of({events:[createEvent(PaymentEvents.PaymentRejected, {cartId: data.cartId, reason: data.reason})]}),
+      ApprovePayment: (state, data, {params}) => {
+        if(!state) return Async.Rejected(createError(PaymentErrors.PaymentNotStarted, [params.id]))
+        return Async.of({events:[createEvent(PaymentEvents.PaymentApproved, {cartId: data.cartId})]})
+      },
+      RejectPayment: (state, data, {params}) => {
+        if(!state) return Async.Rejected(createError(PaymentErrors.PaymentNotStarted, [params.id]))
+        return Async.of({events:[createEvent(PaymentEvents.PaymentRejected, {cartId: data.cartId, reason: data.reason})]})
+      }
     }
   })
 }

@@ -4,10 +4,9 @@ import { Async } from '@bett3r-dev/crocks';
 import sinon from 'sinon';
 import { assert } from 'chai';
 import { testing } from '@bett3r-dev/server-eventsourcing';
-import { ClosedCartPolicy } from '../closedCart.policy';
-import { InvoicesAggregate } from '../invoices.aggregate';
-import {CartEvents, InvoiceCommands, InvoiceEvents} from '@bett3r-dev/pv2-example-domain';
-import { CartClosed } from '../../../domain/src/cart/cart.events';
+import { PaymentRejectedPolicy } from '../paymentRejected.policy';
+import { ProductsAggregate } from '../products.aggregate';
+import {ProductCommands, PaymentEvents} from '@bett3r-dev/pv2-example-domain';
 
 const MongoStoreMock = (state = []) => ({
   read: sinon.stub().callsFake(<T extends Record<string, any>>(filter: T) =>
@@ -20,7 +19,7 @@ const MongoStoreMock = (state = []) => ({
   })
 })
 
-describe( 'ClosedCartPolicy', function() {
+describe( 'PaymentRejected.policy', function() {
   const { createTestEnvironment } = testing
   let es: testing.EventSourcingTest;
   let params: AppServiceParams
@@ -45,7 +44,7 @@ describe( 'ClosedCartPolicy', function() {
           registerMiddleware: ()=>{},
           call: mockCall
         }
-      },
+      }
     };
   })
 
@@ -53,41 +52,31 @@ describe( 'ClosedCartPolicy', function() {
     sinon.resetHistory();
     mockState.splice(0);
   })
-
-  //TODO: no me funciona
-  it.only('Given no previous events, when CartClosed then CreateInvoice command', done => {
-    mockCall.mockImplementationOnce((route, params)=> {
-      if(route === '/carts/:id') return Async.of({
-      state: {
-        products: {
-          "f4ee3e88-fb19-43d5-866d-447a57ef8e0f": {
-            productId: "f4ee3e88-fb19-43d5-866d-447a57ef8e0f",
-            productInfo: {
-              sku: "THE SKU TAL",
-              name: "Some Product",
-              price: 1234
-            },
-            quantity: 1
-          }
-        }
-      }})
-      if(route === '/users/:id') return Async.of(
-        {
-          _id: "61d4425ab71c147bd3a5a4ca",
-          id: "15fa71e9-786c-4a23-8ff1-2e862b96a4fb",
-          address: "address",
-          lastName: "lastName",
-          mail: "mail",
-          name: "name"
-        }
-      )
-   })
-
-    es.testPolicy(ClosedCartPolicy(params))
-      .when(CartClosed, null)
-      .then([es.createCommand(InvoiceCommands.CreateInvoice, null)])
+  it('Given no previous events, when  PaymentRejected then RestoreStock', done => {
+    mockCall.mockImplementationOnce(()=> Async.of({
+     state:{ products:{
+        "77fbf762-07ed-48ed-8780-87336d40ee8e":{
+          productId: "77fbf762-07ed-48ed-8780-87336d40ee8e",
+          productInfo:{
+            name: "name",
+            price: 100,
+            sku: "sku",
+          },
+          quantity: 1,
+        },
+      }
+    }
+    }))
+    const id = 'dd6349f9-4409-41b1-9999-acfbf71cc178';
+    es.testPolicy(PaymentRejectedPolicy(params))
+      .when(PaymentEvents.PaymentRejected, {
+        cartId: "19b80f29-e4a1-4261-8d43-ee3a538cc833",
+        reason: "reason"
+      })
+      .then([es.createCommand(ProductCommands.RestoreStock, undefined)]) //TODO: undefined?
       .fork(done, () => done())
   });
+
 
 
 });

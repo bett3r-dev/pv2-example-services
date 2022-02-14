@@ -16,9 +16,10 @@ export function create(params: AppServiceParams) {
     isHttp: true,
     action: ({ params }) =>
       mongo.getCollection('users').read({id: params.id})
+      .map(x=> { console.log('PASO POR EL GET', x); return x; })
         .map(arr => arr[0])
   })
-  
+
   endpoint.registerEndpoint({
     module: 'Users',
     name: 'Read user',
@@ -29,11 +30,11 @@ export function create(params: AppServiceParams) {
     action: ({ params, query }) =>
       mongo.getCollection('users').read({...query})
   })
-  
+
   endpoint.registerEndpoint({
     module: 'Users',
-    name: 'Read Users',
-    description: 'Reads Users',
+    name: 'Create User',
+    description: 'Create User',
     route: '/users/:id',
     method: 'POST',
     isHttp: true,
@@ -42,7 +43,7 @@ export function create(params: AppServiceParams) {
         .map(arr => arr[0])
     }) as EndpointAction<UserModel>
   })
-  
+
   endpoint.registerEndpoint({
     module: 'Users',
     name: 'Remove user',
@@ -52,7 +53,8 @@ export function create(params: AppServiceParams) {
     isHttp: true,
     action: ({ params }) =>
       mongo.getCollection('users').destroy({id: params.id})
-        .map(constant(params.id))  
+       .map(x=> { console.log('PASO POR EL DELETE', x); return x; })
+        .map(constant(params.id))
   })
 
 }

@@ -1,3 +1,5 @@
+import { maybeToAsync } from '@bett3r-dev/crocks';
+import { safe } from '@bett3r-dev/crocks';
 import { Async, constant, ifElse, isDefined, isEmpty, isNil } from '@bett3r-dev/crocks';
 import { CartCommands, CartErrors, CartEvents, CartModel, CartProduct, ProductModel, ProductsReadModel } from '@bett3r-dev/pv2-example-domain';
 import { Aggregate, AggregateState, CommandHandlerResponse, createError } from '@bett3r-dev/server-core';
@@ -40,8 +42,8 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
 
   const readAndValidateStockProducts = (validationMap: Partial<ValidationMapType>) => (data: CartProduct) =>
     call<AggregateState<ProductModel>>('/products/:id', {params:{id: data.productId}})
-      .map(product => ({...product.state, id: product.lastEvent.metadata.id}))
-      .map(u.ensureArray)
+    .map(product => ({...product.state, id: data.productId}))
+    .map(u.ensureArray)
       .chain(validateStockProducts([data], validationMap));
 
   const validateProductInCart = (state: CartModel, productId: string) =>
@@ -53,33 +55,40 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
   return ({
     name: 'Carts',
     eventReducers: {
-      UserCartCreated: () => ({}),
+      UserCartCreated: (state, data) => ({...data}),
       ProductAdded: (state, data) => u.assocPath(['products', data.productId], data, state),
       QuantityUpdated: (state, data) => u.assocPath(['products', data.productId, 'quantity'], data.quantity, state),
       ProductRemoved: (state, data) => u.dissocPath(['products', data.productId], state),
       CartClosed: (state) => ({...state, isClosed: true}),
     },
     commandHandlers: {
-      //TODO: Validate user exists
-      CreateUserCart: (state, data, {params}) =>
-        u.safeAsync(isEmpty, state)
-          .bimap(
-            constant(createError(CartErrors.CartAlreadyExist, [params.id])),
-            constant({events:[createEvent(CartEvents.UserCartCreated, null)]})
-          ),
-      //TODO: Validate cart exists
-      AddProduct: (state, data) =>
-        u.safeAsync(isNil, u.propPath(['products', data.productId], state))
+      CreateUserCart: (state, data, {params}) =>{
+        if (!data.userId) return Async.Rejected(createError(CartErrors.UserDoesNotExist, null))
+        return u.safeAsync(isEmpty, state)
+          .bimap(constant(createError(CartErrors.CartAlreadyExist, [params.id])), u.I)
+          .chain(() =>
+            call('/users/:id', { params: {id: data.userId}})
+            .chain(u.safeAsync(isDefined))
+            .bimap(
+              constant(createError(CartErrors.UserDoesNotExist, null)),
+              () => ({events:[createEvent(CartEvents.UserCartCreated, {userId: data.userId})]}),
+            )
+          )},
+          //Swap -> lo que esta en la izquiera lo pasa pa la derecha y viceversa (espera funciones de mapeos)
+          //coalesce -> todo lo pasa para la derecha ( para la derecha funciona como un map, y para la izquierda como un swap)
+      AddProduct: (state, data, {params}) =>{
+        if(!state.state) return Async.Rejected(createError(CartErrors.CartDoesNotExist, [params.id]))
+        return u.safeAsync(isNil, u.propPath(['products', data.productId], state))
           .bimap(constant(createError(CartErrors.ProductAlreadyInCart, [data.productId])), u.I)
           .chain(() =>
             Async.of(data)
               .chain(readAndValidateStockProducts(ErrorValidationMap))
               .map(constant({events:[createEvent(CartEvents.ProductAdded, data)]}))
-          ),
-      //TODO: Validate cart exists
-      UpdateQuantity: ({state}, data) =>
-        validateProductInCart(state, data.productId)
-          .map(constant(data))
+          )},
+      UpdateQuantity: ({state}, data, {params}) =>{
+        if(!state) return Async.Rejected(createError(CartErrors.CartDoesNotExist, [params.id]))
+        return validateProductInCart(state, data.productId)
+          .map(constant(data)) // .map(()=> data)
           .chain(u.cond([
             [data => data.quantity < 0, constant(Async.Rejected(
               createError(CartErrors.NegativeQuantity, [data.productId])
@@ -91,16 +100,19 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
               Async.of(data)
                 .chain(readAndValidateStockProducts(u.pick(['ProductOutOfStock'], ErrorValidationMap)))
                 .map(constant({events:[createEvent(CartEvents.QuantityUpdated, data)]} as CommandHandlerResponse))
-            ]
-          ])),
-      //TODO: Validate cart exists
-      RemoveProduct: ({state}, data) =>
-        validateProductInCart(state, data)
-          .map(constant({events:[createEvent(CartEvents.ProductRemoved, {productId: data})]})),
+                //constant(value:any) => () => value
 
-      //TODO: Validate cart exists & EmptyCart
-      CloseCart: () =>
-        Async.of({events:[createEvent(CartEvents.CartClosed, null)]}),
+            ]
+          ]))},
+      RemoveProduct: ({state}, data, {params}) => {
+        if(!state) return Async.Rejected(createError(CartErrors.CartDoesNotExist, [params.id]))
+        return validateProductInCart(state, data)
+          .map(constant({events:[createEvent(CartEvents.ProductRemoved, {productId: data})]}))},
+
+      CloseCart: ({state}, data, {params}) =>{
+        if(!state) return Async.Rejected(createError(CartErrors.CartDoesNotExist, [params.id]))
+        // if(!state.products.length)  return Async.Rejected(createError(CartErrors.EmptyCart, [params.id])) //TODO: no se por qué si dice record no me deja hacer el objectkeys
+        return Async.of({events:[createEvent(CartEvents.CartClosed, null)]})},
     }
   })
 }

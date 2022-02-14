@@ -4,10 +4,9 @@ import { Async } from '@bett3r-dev/crocks';
 import sinon from 'sinon';
 import { assert } from 'chai';
 import { testing } from '@bett3r-dev/server-eventsourcing';
-import { ClosedCartPolicy } from '../closedCart.policy';
-import { InvoicesAggregate } from '../invoices.aggregate';
-import {CartEvents, InvoiceCommands, InvoiceEvents} from '@bett3r-dev/pv2-example-domain';
-import { CartClosed } from '../../../domain/src/cart/cart.events';
+import { PaymentResultPolicy } from '../paymentResult.policy';
+import { PaymentsAggregate } from '../payments.aggregate';
+import {PaymentCommands, PaymentEvents} from '@bett3r-dev/pv2-example-domain';
 
 const MongoStoreMock = (state = []) => ({
   read: sinon.stub().callsFake(<T extends Record<string, any>>(filter: T) =>
@@ -20,7 +19,7 @@ const MongoStoreMock = (state = []) => ({
   })
 })
 
-describe( 'ClosedCartPolicy', function() {
+describe( 'PaymentResult.policy', function() {
   const { createTestEnvironment } = testing
   let es: testing.EventSourcingTest;
   let params: AppServiceParams
@@ -45,7 +44,7 @@ describe( 'ClosedCartPolicy', function() {
           registerMiddleware: ()=>{},
           call: mockCall
         }
-      },
+      }
     };
   })
 
@@ -54,38 +53,25 @@ describe( 'ClosedCartPolicy', function() {
     mockState.splice(0);
   })
 
-  //TODO: no me funciona
-  it.only('Given no previous events, when CartClosed then CreateInvoice command', done => {
-    mockCall.mockImplementationOnce((route, params)=> {
-      if(route === '/carts/:id') return Async.of({
-      state: {
-        products: {
-          "f4ee3e88-fb19-43d5-866d-447a57ef8e0f": {
-            productId: "f4ee3e88-fb19-43d5-866d-447a57ef8e0f",
-            productInfo: {
-              sku: "THE SKU TAL",
-              name: "Some Product",
-              price: 1234
-            },
-            quantity: 1
-          }
-        }
-      }})
-      if(route === '/users/:id') return Async.of(
-        {
-          _id: "61d4425ab71c147bd3a5a4ca",
-          id: "15fa71e9-786c-4a23-8ff1-2e862b96a4fb",
-          address: "address",
-          lastName: "lastName",
-          mail: "mail",
-          name: "name"
-        }
-      )
-   })
-
-    es.testPolicy(ClosedCartPolicy(params))
-      .when(CartClosed, null)
-      .then([es.createCommand(InvoiceCommands.CreateInvoice, null)])
+  it('Given no previous events, when PaymentSucceeded then ApprovePayment', done => {
+    mockCall.mockImplementationOnce(()=> Async.of({}))
+    const id = 'dd6349f9-4409-41b1-9999-acfbf71cc178';
+    es.testPolicy(PaymentResultPolicy(params))
+      .when(PaymentEvents.PaymentSucceeded, {
+        cartId: "19b80f29-e4a1-4261-8d43-ee3a538cc833"
+      },{id})
+      .then([es.createCommand(PaymentCommands.ApprovePayment, undefined)]) //TODO: undefined?
+      .fork(done, () => done())
+  });
+  it('Given no previous events, when PaymentFailed then RejectPayment', done => {
+    mockCall.mockImplementationOnce(()=> Async.of({}))
+    const id = 'dd6349f9-4409-41b1-9999-acfbf71cc178';
+    es.testPolicy(PaymentResultPolicy(params))
+      .when(PaymentEvents.PaymentFailed, {
+        cartId: "19b80f29-e4a1-4261-8d43-ee3a538cc833",
+        reason: "reason"
+      },{id})
+      .then([es.createCommand(PaymentCommands.RejectPayment, undefined)]) //TODO: undefined?
       .fork(done, () => done())
   });
 
