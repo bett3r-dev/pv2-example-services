@@ -78,7 +78,7 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
           //coalesce -> todo lo pasa para la derecha ( para la derecha funciona como un map, y para la izquierda como un swap)
       AddProduct: (state, data, {params}) =>{
         if(!state.state) return Async.Rejected(createError(CartErrors.CartDoesNotExist, [params.id]))
-        return u.safeAsync(isNil, u.propPath(['products', data.productId], state))
+        return u.safeAsync(isNil, u.propPath(['products', data.productId], state.state))
           .bimap(constant(createError(CartErrors.ProductAlreadyInCart, [data.productId])), u.I)
           .chain(() =>
             Async.of(data)
@@ -111,7 +111,11 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
 
       CloseCart: ({state}, data, {params}) =>{
         if(!state) return Async.Rejected(createError(CartErrors.CartDoesNotExist, [params.id]))
-        // if(!state.products.length)  return Async.Rejected(createError(CartErrors.EmptyCart, [params.id])) //TODO: no se por qué si dice record no me deja hacer el objectkeys
+        console.log(state.products)
+        if(!state.products)  return Async.Rejected(createError(CartErrors.EmptyCart, [params.id])) //TODO: No funciona el isNil??
+        // return u.safeAsync(isNil, state.products)
+        // .bimap(constant(createError(CartErrors.EmptyCart, [params.id])), u.I)
+        // .chain(() => Async.of({events:[createEvent(CartEvents.CartClosed, null)]}))},
         return Async.of({events:[createEvent(CartEvents.CartClosed, null)]})},
     }
   })

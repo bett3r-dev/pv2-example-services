@@ -76,7 +76,4 @@ describe( 'PaymentRejected.policy', function() {
       .then([es.createCommand(ProductCommands.RestoreStock, undefined)]) //TODO: undefined?
       .fork(done, () => done())
   });
-
-
-
 });

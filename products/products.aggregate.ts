@@ -23,20 +23,20 @@ export const ProductsAggregate = ({serverComponents, u}: AppServiceParams) : Agg
             constant({events:[createEvent(ProductEvents.ProductCreated, data)]}),
           ),
 
-      UpdateStock: (state, data, {params}) =>
-        u.cond([
+      UpdateStock: ({state}, data, {params}) =>{
+        return u.cond([
           [()=> !state, constant(Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id])))],
           [()=> data < 0, constant(Async.Rejected(createError(ProductErrors.NegativeQuantity, [params.id])))],
           [u.T, constant(Async.of({events:[createEvent(ProductEvents.StockUpdated, data)]}))]
-        ])(),
-      DeleteProduct: (state, _, {params}) =>
-        !!state
+        ])()},
+      DeleteProduct: ({state}, _, {params}) =>
+        !state
           ? Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
           : Async.of({events:[createEvent(ProductEvents.ProductDeleted, null)]}),
       DecreaseStock: (state, data,{params}) => {
-        console.log('state', state)
         if (!state || !state?.state) return Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
-        if (state.state.quantity - data.quantity < 0) Async.Rejected(createError(ProductErrors.NegativeQuantity, [params.id]))
+        if ( data.quantity < 1) return Async.Rejected(createError(ProductErrors.NegativeQuantity, [params.id]))
+        if (state.state.quantity - data.quantity < 0) return Async.Rejected(createError(ProductErrors.NegativeQuantity, [params.id]))
         return Async.of({events:[createEvent(ProductEvents.StockDecreased, data.quantity)]})
       },
       RestoreStock: (state, data,{params}) => {

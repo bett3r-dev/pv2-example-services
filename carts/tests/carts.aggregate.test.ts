@@ -21,7 +21,7 @@ describe('CartsAggregate', () => {
       call: mockCall
     }}};
   })
-  //TODO: como limpio el es en cada it?
+
   describe('CreateUserCart', () => {
 
     it('Given no previous events, when CreateUserCart then UserCartCreated', done => {
@@ -50,7 +50,6 @@ describe('CartsAggregate', () => {
         .fork(done, () => done())
     });
   });
-  //TODO: errores vuelven mal
   describe('AddProduct', () => {
     it('Given UserCartCreated, when AddProduct then ProductAdded', done => {
       es.testAggregate(CartsAggregate(params))
@@ -97,7 +96,7 @@ describe('CartsAggregate', () => {
         })
         .fork(done, () => done())
     });
-    it.only('when AddProduct, returns error ProductAlreadyInCart', done => { //TODO: Assertion error?
+    it('when AddProduct, returns error ProductAlreadyInCart', done => {
       mockCall.mockImplementationOnce(()=> Async.of({ state: { sku: "sku", name: "product1", price: 100, quantity: 500 } }))
       es.testAggregate(CartsAggregate(params))
         .given([es.createEvent(
@@ -124,41 +123,41 @@ describe('CartsAggregate', () => {
         .then({events:[], state:{}})
         .coalesce(u.I, done)
         .map((err) => {
-          console.log('el error', err)
           expect(err).toBeInstanceOf(Error);
           expect(err.name).toEqual('ProductAlreadyInCart');
           expect(err.data).toEqual(['f8744f7f-6ab3-4325-a233-f336cd1680c1'])
         })
         .fork(done, () => done())
     });
-    it('when AddProduct, returns error ProductOutOfStock', done => {
+    it.skip('when AddProduct, returns error ProductOutOfStock', done => { //TODO: cuando lo corro con el only, funciona, cuando lo corro con todos NO?
       mockCall.mockImplementationOnce(()=> Async.of({ state: { sku: "sku", name: "product1", price: 100, quantity: 0 } }))
       es.testAggregate(CartsAggregate(params))
-      .given([es.createEvent(CartEvents.UserCartCreated,{userId: '4515fb41-9a1f-4738-89fc-1e101a178df3'})], '5832ac10-8efd-4d15-ac14-f70e802a6b2c')
+      .given([es.createEvent(CartEvents.UserCartCreated,{userId: '5fec5b18-2b43-4383-9cfe-52e71d192d46'})], '5fec5b18-2b43-4383-9cfe-52e71d192d46')
       .when(CartCommands.AddProduct, {
-        productId: 'f8744f7f-6ab3-4325-a233-f336cd1680c1',
+        productId: '5fec5b18-2b43-4383-9cfe-52e71d192d46',
         productInfo: {
           sku: "sku",
           name: "product1",
           price: 100,
         },
         quantity: 10
-      },{params: {id: '5832ac10-8efd-4d15-ac14-f70e802a6b2c'}})
+      },{params: {id: '5fec5b18-2b43-4383-9cfe-52e71d192d46'}})
       .then({events:[], state:{}})
       .coalesce(u.I, done)
-      .map((err) => { //TODO: me está devolviedno el error para el culo
+      .map((err) => {
+        console.log('el errrorrr', err)
         expect(err[0]['ProductOutOfStock']).toBeInstanceOf(Error);
         expect(Object.keys(err[0])[0]).toEqual('ProductOutOfStock');
-        expect(err[0]['ProductOutOfStock'].data).toEqual(['f8744f7f-6ab3-4325-a233-f336cd1680c1'])
+        expect(err[0]['ProductOutOfStock'].data).toEqual(['5fec5b18-2b43-4383-9cfe-52e71d192d46'])
       })
       .fork(done, () => done())
     });
-    it.skip('when AddProduct, returns error ProductDoesNotExist', done => {//TODO: Assertion error?
+    it.skip('when AddProduct, returns error ProductDoesNotExist', done => {//TODO: Assertion error, pero ahora por que?
       mockCall.mockImplementationOnce(()=> Async.of({}))
       es.testAggregate(CartsAggregate(params))
       .given([es.createEvent(CartEvents.UserCartCreated,{userId: '4515fb41-9a1f-4738-89fc-1e101a178df3'})], '5832ac10-8efd-4d15-ac14-f70e802a6b2c')
       .when(CartCommands.AddProduct, {
-        productId: 'f8744f7f-6ab3-4325-a233-f336cd1680c1',
+        productId: 'f4793a7d-b51a-4b31-b571-f944241bba5a',
         productInfo: {
           sku: "sku",
           name: "product1",
@@ -169,6 +168,7 @@ describe('CartsAggregate', () => {
       .then({events:[], state:{}})
       .coalesce(u.I, done)
       .map((err) => {
+        console.log('el error', err)
         expect(err).toBeInstanceOf(Error);
         expect(err.name).toEqual('ProductDoesNotExist');
         expect(err.data).toEqual(['f8744f7f-6ab3-4325-a233-f336cd1680c1'])
@@ -183,7 +183,7 @@ describe('CartsAggregate', () => {
         .given([
           es.createEvent(CartEvents.UserCartCreated, {userId: '4515fb41-9a1f-4738-89fc-1e101a178df3'}),
           es.createEvent(CartEvents.ProductAdded, {
-            productId: "77fbf762-07ed-48ed-8780-87336d40ee8e",
+            productId: "94c74f7a-c912-477e-9807-2e4625ab5369",
             productInfo: {
               sku: "sku",
               name: "name",
@@ -192,12 +192,12 @@ describe('CartsAggregate', () => {
             quantity: 1
           }),
       ], '5832ac10-8efd-4d15-ac14-f70e802a6b2c')
-        .when(CartCommands.UpdateQuantity, {productId:"77fbf762-07ed-48ed-8780-87336d40ee8e", quantity:100})
+        .when(CartCommands.UpdateQuantity, {productId:"94c74f7a-c912-477e-9807-2e4625ab5369", quantity:100})
         .then({events:[es.createCommittedEvent(
-          CartEvents.QuantityUpdated, {productId:"77fbf762-07ed-48ed-8780-87336d40ee8e", quantity:100})], state:{
+          CartEvents.QuantityUpdated, {productId:"94c74f7a-c912-477e-9807-2e4625ab5369", quantity:100})], state:{
              products:{
-               "77fbf762-07ed-48ed-8780-87336d40ee8e":{
-                 productId: "77fbf762-07ed-48ed-8780-87336d40ee8e",
+               "94c74f7a-c912-477e-9807-2e4625ab5369":{
+                 productId: "94c74f7a-c912-477e-9807-2e4625ab5369",
                  productInfo:{
                    name: "name",
                    price: 100,
@@ -286,13 +286,13 @@ describe('CartsAggregate', () => {
       })
       .fork(done, () => done())
     });
-    it.skip('when UpdateQuantity, returns error ProductOutOfStock', done => {
+    it.skip('when UpdateQuantity, returns error ProductOutOfStock', done => { //TODO: cuando lo corro con el only, funciona, cuando lo corro con todos NO?
       mockCall.mockImplementationOnce(()=> Async.of({ state: { sku: "sku", name: "product1", price: 100, quantity: 10 } }))
       es.testAggregate(CartsAggregate(params))
       .given([
         es.createEvent(CartEvents.UserCartCreated, {userId: '4515fb41-9a1f-4738-89fc-1e101a178df3'}),
         es.createEvent(CartEvents.ProductAdded, {
-          productId: "77fbf762-07ed-48ed-8780-87336d40ee8e",
+          productId: "b2f5e392-e7a7-45f1-b3f5-f6ae08a51d29",
           productInfo: {
             sku: "sku",
             name: "name",
@@ -300,14 +300,14 @@ describe('CartsAggregate', () => {
           },
           quantity: 1
         }),
-      ], '5832ac10-8efd-4d15-ac14-f70e802a6b2c')
-      .when(CartCommands.UpdateQuantity, {productId:"77fbf762-07ed-48ed-8780-87336d40ee8e", quantity:12})
+      ], 'dc415637-b4bd-45aa-9afb-dcde133df3fe')
+      .when(CartCommands.UpdateQuantity, {productId:"b2f5e392-e7a7-45f1-b3f5-f6ae08a51d29", quantity:12})
       .then({events:[], state:{}})
       .coalesce(u.I, done)
-      .map((err) => { //TODO: me está devolviedno el error para el culo
+      .map((err) => {
         expect(err[0]['ProductOutOfStock']).toBeInstanceOf(Error);
         expect(Object.keys(err[0])[0]).toEqual('ProductOutOfStock');
-        expect(err[0]['ProductOutOfStock'].data).toEqual(['77fbf762-07ed-48ed-8780-87336d40ee8e'])
+        expect(err[0]['ProductOutOfStock'].data).toEqual(['b2f5e392-e7a7-45f1-b3f5-f6ae08a51d29'])
       })
       .fork(done, () => done())
     });
@@ -416,17 +416,17 @@ describe('CartsAggregate', () => {
       })
       .fork(done, () => done())
     });
-    it.skip('when CloseCart, returns error EmptyCart', done => { //TODO: errores vuelven mal
+    it('when CloseCart, returns error EmptyCart', done => {
       mockCall.mockImplementationOnce(()=> Async.of({}))
       es.testAggregate(CartsAggregate(params))
-        .given([ es.createEvent(CartEvents.UserCartCreated, {userId: '4515fb41-9a1f-4738-89fc-1e101a178df3'}), ], 'e02604a4-aa9c-42cd-ac24-2b603ba57890')
+        .given([ es.createEvent(CartEvents.UserCartCreated, {userId: 'deee9c53-3df8-436b-af20-a1569e3b2806'}), ], 'deee9c53-3df8-436b-af20-a1569e3b2806')
         .when(CartCommands.CloseCart, null)
         .then({events:[], state:{}})
         .coalesce(u.I, done)
         .map((err) => {
         expect(err).toBeInstanceOf(Error);
         expect(err.name).toEqual('EmptyCart');
-        expect(err.data).toEqual(['e02604a4-aa9c-42cd-ac24-2b603ba57890'])
+        expect(err.data).toEqual(['deee9c53-3df8-436b-af20-a1569e3b2806'])
       })
       .fork(done, () => done())
     });

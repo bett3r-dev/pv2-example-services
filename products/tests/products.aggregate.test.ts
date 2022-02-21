@@ -98,8 +98,8 @@ describe('ProductsAggregate', () => {
       .coalesce(u.I, done)
       .map((err) => {
         expect(err).toBeInstanceOf(Error);
-        // expect(err.name).toEqual('ProductDoesNotExist'); //TODO: AsertionError de nuevo..
-        // expect(err.data).toEqual(['f44fd6eb-03a9-4412-8eab-3be766056b1e'])
+        expect(err.name).toEqual('ProductDoesNotExist');
+        expect(err.data).toEqual(['f44fd6eb-03a9-4412-8eab-3be766056b1e'])
       })
       .fork(done, () => done())
     });
@@ -126,7 +126,7 @@ describe('ProductsAggregate', () => {
     });
   });
   describe('DeleteProduct', () => {
-    it.skip('Given ProductCreated, when DeleteProduct then ProductDeleted', done => { //TODO: Nome esta creando el producto?
+    it('Given ProductCreated, when DeleteProduct then ProductDeleted', done => {
       es.testAggregate(ProductsAggregate(params))
       .given([
         es.createEvent(ProductEvents.ProductCreated,{
@@ -176,17 +176,17 @@ describe('ProductsAggregate', () => {
         }})
       .fork(done, () => done())
     });
-    it.skip('when DecreaseStock, returns error NegativeQuantity', done => { //TODO: Assertion error
+    it('when DecreaseStock, returns error NegativeQuantity', done => {
       es.testAggregate(ProductsAggregate(params))
       .given([
         es.createEvent(ProductEvents.ProductCreated,{
           sku: "sku",
           name: "name",
           price: 100,
-          quantity: 100
+          quantity: 9
         })
       ], '1e8cee29-dfe7-48a2-b612-3de7a3977b33')
-      .when(ProductCommands.DecreaseStock, {cartId:'1e8cee29-dfe7-48a2-b612-3de7a3977b33', quantity:-10}, {params: {id: '1e8cee29-dfe7-48a2-b612-3de7a3977b33'}})
+      .when(ProductCommands.DecreaseStock, {cartId:'1e8cee29-dfe7-48a2-b612-3de7a3977b33', quantity:10}, {params: {id: '1e8cee29-dfe7-48a2-b612-3de7a3977b33'}})
       .then({events:[], state:{}})
       .coalesce(u.I, done)
       .map((err) => {
