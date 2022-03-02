@@ -1,9 +1,9 @@
 import { Async, constant, isNil } from '@bett3r-dev/crocks';
 import { ProductCommands, ProductErrors, ProductEvents, ProductModel } from '@bett3r-dev/pv2-example-domain';
-import { Aggregate, createError, UserAuth } from '@bett3r-dev/server-core';
+import { Aggregate, createError, UserAuthentication } from '@bett3r-dev/server-core';
 import { AppServiceParams } from 'src/types';
 
-type User = UserAuth & {
+type User = UserAuthentication & {
   products: string[]
 }
 
@@ -39,10 +39,13 @@ export const ProductsAggregate = ({serverComponents, u}: AppServiceParams) : Agg
           ? Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
           : Async.of({events:[createEvent(ProductEvents.ProductDeleted, null)]}),
 
-      DecreaseStock: (state, data,{params}) => {
-        if (!state) return Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [params.id]))
-        if (state.state.quantity - data.quantity < 0) Async.Rejected(createError(ProductErrors.NegativeQuantity, [params.id]))
-        return Async.of({events:[createEvent(ProductEvents.StockDecreased, data.quantity)]})
+      DecreaseStock: (state, data, {params}) => {
+        Object.keys(data).map((id: string) => {
+          if (!state[id]) return Async.Rejected(createError(ProductErrors.ProductDoesNotExist, [id]))
+          if (state[id].state.quantity - data[id].quantity < 0) Async.Rejected(createError(ProductErrors.NegativeQuantity, [id]))
+          return Async.of([createEvent(ProductEvents.StockDecreased, data[id].quantity)]);     
+        });
+        return Async.of([]);
       },
 
       RestoreStock: (state, data,{params}) => {
