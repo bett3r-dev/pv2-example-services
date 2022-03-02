@@ -3,6 +3,7 @@ import { CartEvents, CartModel, InvoiceCommands, UserModel } from '@bett3r-dev/p
 import { Policy } from '@bett3r-dev/server-core';
 import { AppServiceParams } from 'src/types';
 import { InvoicesAggregate } from './invoices.aggregate';
+import { CommittedEvent } from '../../serverComponents/core/src/interfaces/EventSourcing';
 
 export const ClosedCartPolicy = (params: AppServiceParams) : Policy<Pick<typeof CartEvents, 'CartClosed'>> => {
   const {serverComponents, u} = params;
@@ -12,23 +13,22 @@ export const ClosedCartPolicy = (params: AppServiceParams) : Policy<Pick<typeof 
     name: 'ClosedCart',
     commandHandler: InvoicesAggregate(params),
     eventHandlers: {
-      CartClosed: (event) =>
-        Async.of((cart: CartModel) => (user: UserModel) => ({cart, user}))
-          .ap(
-            call('/carts/:id', {params: {id: event.metadata.id}})
-              .map(u.prop('state'))
+      CartClosed: (event) =>{
+        return call('/carts/:id', {params: {id: event.metadata.id}})
+          .map(u.prop('state'))
+          .chain((cart: CartModel) => call('/users/:id', {params: {id: cart.userId}})
+            .map((user)=>({cart, user}))
           )
-          //FIXME: Buscar al usuario de verdad
-          .ap(Async.of({address: 'Some Address'}))
           .map(({cart, user} :{cart: CartModel, user: UserModel}) => ({
             id: event.metadata.id,
-            command: createCommand(InvoiceCommands.CreateInvoice, {
-              userId: '09cb2c88-05cb-4e7f-a8af-5dc2fbc12425',//cart.userId,
+            command: createCommand(InvoiceCommands.CreateInvoice, { //TODO: no funciona, quizas fue lo que hicimos del method para los calls
+              userId: cart.userId,
               products: cart.products,
               address: user.address,
               total: u.getCartTotal(cart)
             })
           }))
+      }
     }
   })
 }

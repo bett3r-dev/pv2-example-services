@@ -24,6 +24,9 @@ export const UserCartsProjectors = (params: AppServiceParams) : Projector<typeof
   return ({
     name: 'UserCarts',
     eventProjectors: {
+      UserCartCreated: (event: CommittedEvent<{userId:string}>) =>{
+        return mongo.getCollection('user-carts').upsert({id: event.metadata.id}, {$set:{ ...event.data, id:event.metadata.id, lastEvent:event}})
+      },
       ProductAdded: (event) =>{
         return mongo.getCollection('user-carts').upsert({id: event.metadata.id}, {$set:{ [`products.${event.data.productId}`]:{...event.data}, id:event.metadata.id, lastEvent:event}})},
       QuantityUpdated: updateProductQuantity,

@@ -16,6 +16,7 @@ export const PaymentRejectedPolicy = (params: AppServiceParams) : Policy<typeof 
         call(`/carts/:id`, {params:{id: event.data.cartId}})
           .map(u.pathOr({}, ['state', 'products']))
           .map(Object.values)
+          .map(x=> { console.log('que hay aca', x); return x; })
           .map(u.map(({productId, quantity})=>({
             id: productId,
             command: createCommand(ProductCommands.RestoreStock, {cartId: event.data.cartId, quantity})
