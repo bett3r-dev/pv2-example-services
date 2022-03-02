@@ -7,7 +7,7 @@ import { constant } from '@bett3r-dev/crocks';
 export function create(params: AppServiceParams) {
   const {serverComponents: {eventsourcing, hook}, u} = params;
 
-  hook.onHookAsync('Authentication', 'userRegistred', (user: UserAuth) => {
+  hook.onHookAsync('Authentication', 'userRegistered', (user: UserAuth) => {
     return eventsourcing.executeCommand(AuthenticationSystem(params), AuthenticationCommands.RegisterUser)({body: u.pick(['username'], user), params:{id:user.username}})
       .map(constant(user));
   })

@@ -1,11 +1,11 @@
 import { Command } from "@bett3r-dev/server-core";
 import joi from 'joi';
-import { UserLoggedIn, UserLoggedOut, UserRegistred } from "./authentication.events";
+import { UserLoggedIn, UserLoggedOut, UserRegistered } from "./authentication.events";
 
 export const RegisterUser: Command<{username:string}> = () => ({
   schema: joi.object().keys({username: joi.string()}),
   isPublic: false,
-  events: [UserRegistred]
+  events: [UserRegistered]
 })
 
 export const LoginUser: Command<{username:string}> = () => ({

@@ -12,7 +12,7 @@ export const AuthenticationSystem = ({serverComponents, u}: AppServiceParams) : 
     isStreamable: true,
     commandHandlers: {
       RegisterUser: (data) =>
-        Async.of([createEvent(AuthenticationEvents.UserRegistred, data)]),
+        Async.of([createEvent(AuthenticationEvents.UserRegistered, data)]),
       LoginUser: (data) =>
         Async.of([createEvent(AuthenticationEvents.UserLoggedIn, data)]),
       LogoutUser: (data) =>
