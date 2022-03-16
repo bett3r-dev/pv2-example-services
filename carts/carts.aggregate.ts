@@ -1,6 +1,7 @@
 import { Async, constant, ifElse, isDefined, isEmpty, isNil } from '@bett3r-dev/crocks';
 import { CartCommands, CartErrors, CartEvents, CartModel, CartProduct, ProductModel, ProductsReadModel } from '@bett3r-dev/pv2-example-domain';
 import { Aggregate, AggregateState, CommandHandlerResponse, createError } from '@bett3r-dev/server-core';
+import { UserErrors } from 'src/domain/build/user';
 import { AppServiceParams } from 'src/types';
 
 export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggregate<CartModel, typeof CartCommands, typeof CartEvents> => {
@@ -61,14 +62,15 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
     },
     commandHandlers: {
       CreateUserCart: (state, data, {params}) =>{
-        if (!data.userId) return Async.Rejected(createError(CartErrors.UserDoesNotExist, null))
+        if (!data.userId) return Async.Rejected(createError(UserErrors.UserDoesNotExist, null))
         return u.safeAsync(isEmpty, state)
           .bimap(constant(createError(CartErrors.CartAlreadyExist, [params.id])), u.I)
           .chain(() =>
             call('/users/:id', { params: {id: data.userId}})
+            .bimap(x=> { console.log('ERROR::::', x); return x; }, x=> { console.log('##############################################', x); return x; })   
             .chain(u.safeAsync(isDefined))
             .bimap(
-              constant(createError(CartErrors.UserDoesNotExist, null)),
+              constant(createError(UserErrors.UserDoesNotExist, null)),
               () => ({events:[createEvent(CartEvents.UserCartCreated, {userId: data.userId})]}),
             )
           )},

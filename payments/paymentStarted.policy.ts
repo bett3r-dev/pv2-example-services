@@ -9,7 +9,7 @@ export const PaymentStartedPolicy = (params: AppServiceParams) : Policy<typeof P
   const {eventsourcing: {createCommand}} = serverComponents;
 
   return ({
-    name: 'PaymentStarted',
+    name: 'PaymentStartedPolicy',
     commandHandler: PaymentGatewaySystem(params),
     eventHandlers: {
       PaymentStarted: (event) =>

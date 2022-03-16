@@ -6,5 +6,5 @@ import { InvoicesAggregate } from './invoices.aggregate';
 export function create(params: AppServiceParams) {
   const { serverComponents, u } = params;
   serverComponents.eventsourcing.routeCommandHandler(InvoicesAggregate(params), InvoiceCommands);
-  serverComponents.eventsourcing.routePolicy(ClosedCartPolicy(params), CartEvents)
+  serverComponents.eventsourcing.routeEventHandler(ClosedCartPolicy(params), CartEvents)
 }

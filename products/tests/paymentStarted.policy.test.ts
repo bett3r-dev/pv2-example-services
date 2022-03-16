@@ -4,7 +4,7 @@ import { Async } from '@bett3r-dev/crocks';
 import sinon from 'sinon';
 import { assert } from 'chai';
 import { testing } from '@bett3r-dev/server-eventsourcing';
-import { PaymentStartedPolicy } from '../paymentStarted.policy';
+import { PaymentResultPolicy } from '../paymentResult.policy';
 import { ProductsAggregate } from '../products.aggregate';
 import {ProductCommands, PaymentEvents} from '@bett3r-dev/pv2-example-domain';
 

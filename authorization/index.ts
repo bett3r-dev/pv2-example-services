@@ -72,8 +72,8 @@ export function create(params: AuthorizationServiceParams) {
   const {eventsourcing, endpoint, database:{mongo}} = serverComponents;
   eventsourcing.routeCommandHandler(UsersAuthorizationSystem(params), AuthorizationCommands);
   eventsourcing.routeCommandHandler(RolesSystem(params), AuthorizationCommands);
-  // eventsourcing.routeProjector(RolesProjector(params), AuthorizationEvents);
-  eventsourcing.routeProjector(UsersAuthorizationProjector(params), AuthorizationEvents);
+  // eventsourcing.routeEventHandler(RolesProjector(params), AuthorizationEvents);
+  eventsourcing.routeEventHandler(UsersAuthorizationProjector(params), AuthorizationEvents);
 
   const getRoles = (roles?: (string|Role)[], {tenant, scope, excludeDisabled}: FilterRoleParams = {scope: 'default'}) =>
     Async.of(roles)

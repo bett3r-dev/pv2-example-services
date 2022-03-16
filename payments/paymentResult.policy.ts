@@ -9,7 +9,7 @@ export const PaymentResultPolicy = (params: AppServiceParams) : Policy<Pick<type
   const {eventsourcing: {createCommand}} = serverComponents;
 
   return ({
-    name: 'PaymentResult',
+    name: 'PaymentResultPolicy',
     commandHandler: PaymentsAggregate(params),
     eventHandlers: {
       PaymentSucceeded: (event) =>

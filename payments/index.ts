@@ -11,6 +11,6 @@ export function create(params: AppServiceParams) {
   serverComponents.eventsourcing.routeCommandHandler(PaymentsSystem(params), PaymentCommands);
   // serverComponents.eventsourcing.routeCommandHandler(PaymentsAggregate(params), PaymentCommands);
   // serverComponents.eventsourcing.routeCommandHandler(PaymentGatewaySystem(params), PaymentCommands);
-  // serverComponents.eventsourcing.routePolicy(PaymentStartedPolicy(params), PaymentEvents);
-  // serverComponents.eventsourcing.routePolicy(PaymentResultPolicy(params), PaymentEvents);
+  // serverComponents.eventsourcing.routeEventHandler(PaymentStartedPolicy(params), PaymentEvents);
+  // serverComponents.eventsourcing.routeEventHandler(PaymentResultPolicy(params), PaymentEvents);
 }

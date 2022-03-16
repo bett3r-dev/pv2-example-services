@@ -6,7 +6,7 @@ import { PaymentResultPolicy } from './paymentResult.policy';
 
 export const PaymentGatewaySystem = (serviceParams: AppServiceParams) : System<Pick<typeof PaymentCommands, 'Pay'>> => {
   const {serverComponents, u} = serviceParams;
-  const {eventsourcing: {handleEvent, createCommittedEvent}} = serverComponents;
+  const {eventsourcing: {processEvent, createCommittedEvent}} = serverComponents;
   return ({
     name: 'PaymentGateway',
     commandHandlers: {
@@ -19,8 +19,8 @@ export const PaymentGatewaySystem = (serviceParams: AppServiceParams) : System<P
         Async((reject, resolve) => {
           setTimeout(() => {
             (Math.floor(Math.random()*100) % 3 === 0
-              ? handleEvent(PaymentResultPolicy(serviceParams), PaymentEvents.PaymentFailed)({...params, body: createCommittedEvent(PaymentEvents.PaymentFailed, {cartId: data.cartId, reason: 'Bad Luck'})})
-              : handleEvent(PaymentResultPolicy(serviceParams), PaymentEvents.PaymentSucceeded)({...params, body: createCommittedEvent(PaymentEvents.PaymentSucceeded, {cartId: data.cartId})})
+              ? processEvent('PaymentResultPolicy')(createCommittedEvent(PaymentEvents.PaymentFailed, {cartId: data.cartId, reason: 'Bad Luck'}, params.query))
+              : processEvent('PaymentResultPolicy')(createCommittedEvent(PaymentEvents.PaymentSucceeded, {cartId: data.cartId}, params.query))
             )
             .fork(reject, resolve)
           }, 500);

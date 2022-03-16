@@ -4,7 +4,7 @@ import { UserPaymentsProjectors } from "./userPayments.projectors";
 
 export function create(params: AppServiceParams) {
   const {serverComponents: {eventsourcing, endpoint, database:{mongo}}, u} = params;
-  eventsourcing.routeProjector(UserPaymentsProjectors(params), PaymentEvents);
+  eventsourcing.routeEventHandler(UserPaymentsProjectors(params), PaymentEvents);
   endpoint.registerEndpoint({
     method: 'GET',
     module: 'UserPaymentsReadModel',

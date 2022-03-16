@@ -5,7 +5,7 @@ import { InvoicesProjector } from './invoices.projectors';
 export function create(params: AppServiceParams) {
   const {serverComponents:{eventsourcing, endpoint, database:{mongo}}} = params;
 
-  eventsourcing.routeProjector(InvoicesProjector(params), InvoiceEvents);
+  eventsourcing.routeEventHandler(InvoicesProjector(params), InvoiceEvents);
 
   endpoint.registerEndpoint({
     module: 'InvoicesReadModel',

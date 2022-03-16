@@ -4,7 +4,7 @@ import { UserCartsProjectors } from "./userCarts.projectors";
 
 export function create(params: AppServiceParams) {
   const {serverComponents: {eventsourcing, endpoint, database:{mongo}}, u} = params;
-  eventsourcing.routeProjector(UserCartsProjectors(params), CartEvents);
+  eventsourcing.routeEventHandler(UserCartsProjectors(params), CartEvents);
   endpoint.registerEndpoint({
     method: 'GET',
     module: 'UserCartsReadModel',
