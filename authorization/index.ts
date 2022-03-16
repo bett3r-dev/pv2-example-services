@@ -9,15 +9,6 @@ import { createError, EventSourcingManager, Role, UnauthorizedError, UserAuthori
 import { Async, isString } from '@bett3r-dev/crocks';
 import joi from 'joi';
 
-// hook.onHookAsync('Authorization', 'userAuthorizationUpserted', (userAuthorization: UserAuthorization) => {
-  //   return eventsourcing.executeCommand(UserAuthorizationSystem(params), AuthorizationCommands.UpsertUserAuthorization)({body: userAuthorization, params:{id:userAuthorization.username}})
-  //     .map(constant(userAuthorization))
-  // })
-  // hook.onHookAsync('Authorization', 'roleUpserted', (role: Role) => {
-  //   return eventsourcing.executeCommand(RoleSystem(params), AuthorizationCommands.UpsertRole)({body: role, params:{id:`${role.scope}:${role.tenant}:${role.name}`}})
-  //     .map(constant(role))
-  // })
-
 export type AuthorizationConfig = {
   useTenants: boolean,
   useScopes: boolean,
