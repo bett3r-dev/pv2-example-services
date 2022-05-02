@@ -1,0 +1,73 @@
+### Create Professional Profile
+POST http://localhost:1984/professional/d93a6313-b098-48c8-b938-72d128df12b2/create-professional-profile
+Content-Type: "application/json"
+
+{
+ "personalDetails": {
+    "name": "Profesional De la Prueba",
+    "address": "Cordoba 2010",
+    "phoneNumber": 12345678,
+    "email":"delapruebaprofesional@gmail.com",
+    "country": "Togo"
+  }
+}
+
+### Upsert Professional Personal Details
+
+POST http://localhost:1984/professional/d93a6313-b098-48c8-b938-72d128df12b2/upsert-professional-personal-details
+Content-Type: "application/json"
+
+{
+    "country": "Tuvalu"
+}
+
+### Upsert Professional Personal Details 2
+
+POST http://localhost:1984/professional/e70cd598-e03f-43af-949a-64b108b413fd/upsert-professional-personal-details
+Content-Type: "application/json"
+
+{
+    "name": "Profesional de la Prueba Modificado"
+}
+
+###
+
+### Create Professional Profile 2
+POST http://localhost:1984/professional/17f51862-136c-4500-99f7-9057e50bf33b/create-professional-profile
+Content-Type: "application/json"
+
+{
+ "personalDetails": {
+    "name": "Miembro de equipo 1",
+    "address": "direccion",
+    "phoneNumber": 12345678,
+    "email":"miembro1@gmail.com",
+    "country": "Togo"
+  }
+}
+### Create Professional Profile 3
+POST http://localhost:1984/professional/d945ce9f-a4ec-4ba3-b0a1-250ec21b6fd0/create-professional-profile
+Content-Type: "application/json"
+
+{
+ "personalDetails": {
+    "name": "Miembro de equipo 2",
+    "address": "direccion",
+    "phoneNumber": 12345678,
+    "email":"miembro2@gmail.com",
+    "country": "Togo"
+  }
+}
+### Create Professional Profile 4
+POST http://localhost:1984/professional/b64e9a37-26b5-42e7-b2db-3334a82ae98e/create-professional-profile
+Content-Type: "application/json"
+
+{
+ "personalDetails": {
+    "name": "Miembro de equipo 3",
+    "address": "direccion",
+    "phoneNumber": 12345678,
+    "email":"miembro3@gmail.com",
+    "country": "Togo"
+  }
+}

@@ -1,0 +1,28 @@
+// import { CommittedEvent, Policy } from "@bett3r-dev/server-core";
+// import { AppServiceParams } from 'src/types';
+// import * as ProfessionalEvents from 'src/domain/src/professionals/professionals.events';
+// import { ProfessionalModel } from 'src/domain/src/professionals/professionals.types';
+// import Async from "@bett3r-dev/crocks/Async";
+// import { constant, isDefined, isTruthy } from '@bett3r-dev/crocks';
+// import { ProfessionalsAggregate } from './professionals.aggregate';
+
+// export const ProfessionalProfileCreation = (params): Policy<Pick<typeof ProfessionalEvents, 'ProfessionalProfileCreated'>> => {
+//   const {serverComponents, u} = params;
+//   const {eventsourcing: {createCommand}} = serverComponents;
+
+
+//   return ({
+//     name: "ProfessionalProfileCreation",
+//     commandHandler: ProfessionalsAggregate(params),
+//     eventHandlers:{
+//       ProfessionalProfileCreated: (event: CommittedEvent<ProfessionalModel>) => {
+//         return Async.of()
+//           .map(constant({
+//             id: event.metadata.id,
+//             // command: createCommand(ProfessionalProfileApproved, null)
+//             // command: createCommand(ProfessionalProfileRejected, null)
+//           }))
+//       },
+//   }
+//   })
+// }

@@ -1,0 +1,19 @@
+POST http://localhost:1984/menu/7b3a2ffe-1da7-4a56-b7ab-5fb326e06a95/create-menu
+Content-Type: "application/json"
+
+{
+ "professionalId": "d93a6313-b098-48c8-b938-72d128df12b",
+ "name": "menu básico"
+}
+
+### Update menu
+
+POST http://localhost:1984/menu/7b3a2ffe-1da7-4a56-b7ab-5fb326e06a95/update-menu
+Content-Type: "application/json"
+
+{
+ "name": "menu premium"
+}
+
+###
+

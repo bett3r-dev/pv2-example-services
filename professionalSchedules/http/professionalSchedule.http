@@ -1,0 +1,16 @@
+### Upsert Professional Schedule
+POST http://localhost:1984/professional-schedule/3cdbf9d8-4edf-4461-9724-02fc4e0a3bc4/upsert-schedule
+Content-Type: "application/json"
+
+{
+"professionalId": "d93a6313-b098-48c8-b938-72d128df12b2",
+"week": [
+   {
+     "dayOfWeek": 1,
+     "hoursStart": 9,
+     "hoursEnd": 13,
+     "minutesStart": 0,
+     "minutesEnd": 0
+  }
+]
+}

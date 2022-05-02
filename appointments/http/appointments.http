@@ -1,0 +1,64 @@
+POST http://localhost:1984/appointment/482eb3ce-e6aa-469b-a83c-36db7540ff5b/start-payment
+Content-Type: "application/json"
+
+{
+ "professionalId": "d93a6313-b098-48c8-b938-72d128df12b2",
+ "patientId": "8d03567b-fd6a-4bb9-867a-7e9dad5bdb60",
+ "dateTimeStart": "2022-01-10T11:00:00.000Z",
+ "dateTimeEnd": "2022-01-10T12:00:00.000Z"
+}
+###
+POST http://localhost:1984/appointment/482eb3ce-e6aa-469b-a83c-36db7540ff5b/start-payment
+Content-Type: "application/json"
+
+{
+ "professionalId": "d93a6313-b098-48c8-b938-72d128df12b2",
+ "patientId": "8d03567b-fd6a-4bb9-867a-7e9dad5bdb60",
+ "dateTimeStart": "2022-01-10T19:00:00.000Z",
+ "dateTimeEnd": "2022-01-10T20:00:00.000Z"
+}
+###
+### reschedule 1
+POST http://localhost:1984/appointment/482eb3ce-e6aa-469b-a83c-36db7540ff5b/reschedule-appointment
+Content-Type: "application/json"
+
+{
+ "dateTimeStart": "2022-01-10T18:00:00.000Z",
+ "dateTimeEnd": "2022-01-10T19:00:00.000Z"
+}
+
+###
+### reschedule 2
+POST http://localhost:1984/appointment/482eb3ce-e6aa-469b-a83c-36db7540ff5b/reschedule-appointment
+Content-Type: "application/json"
+
+{
+ "dateTimeStart": "2022-01-10T10:00:00.000Z",
+ "dateTimeEnd": "2022-01-10T11:00:00.000Z"
+}
+
+###
+
+POST http://localhost:1984/appointment/482eb3ce-e6aa-469b-a83c-36db7540ff5b/approve-payment
+Content-Type: "application/json"
+
+{
+}
+
+###
+
+POST http://localhost:1984/appointment/482eb3ce-e6aa-469b-a83c-36db7540ff5b/cancel-appointment
+Content-Type: "application/json"
+
+{
+}
+###
+
+
+GET http://localhost:1984/events/readmodel/patient/482eb3ce-e6aa-469b-a83c-36db7540ff5b
+Content-Type: "application/json"
+
+{
+}
+
+###
