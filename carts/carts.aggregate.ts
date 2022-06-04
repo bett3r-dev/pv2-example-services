@@ -1,7 +1,6 @@
 import { Async, constant, ifElse, isDefined, isEmpty, isNil } from '@bett3r-dev/crocks';
-import { CartCommands, CartErrors, CartEvents, CartModel, CartProduct, ProductModel, ProductsReadModel } from '@bett3r-dev/pv2-example-domain';
+import { CartCommands, CartErrors, CartEvents, CartModel, CartProduct, ProductModel, ProductsReadModel, UserErrors } from '@bett3r-dev/pv2-example-domain';
 import { Aggregate, AggregateState, CommandHandlerResponse, createError } from '@bett3r-dev/server-core';
-import { UserErrors } from 'src/domain/build/user';
 import { AppServiceParams } from 'src/types';
 
 export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggregate<CartModel, typeof CartCommands, typeof CartEvents> => {
@@ -67,13 +66,13 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
           .bimap(constant(createError(CartErrors.CartAlreadyExist, [params.id])), u.I)
           .chain(() =>
             call('/users/:id', { params: {id: data.userId}})
-            .bimap(x=> { console.log('ERROR::::', x); return x; }, x=> { console.log('##############################################', x); return x; })   
             .chain(u.safeAsync(isDefined))
             .bimap(
               constant(createError(UserErrors.UserDoesNotExist, null)),
               () => ({events:[createEvent(CartEvents.UserCartCreated, {userId: data.userId})]}),
             )
-          )},
+          )
+      },
           //Swap -> lo que esta en la izquiera lo pasa pa la derecha y viceversa (espera funciones de mapeos)
           //coalesce -> todo lo pasa para la derecha ( para la derecha funciona como un map, y para la izquierda como un swap)
       AddProduct: (state, data, {params}) =>{
@@ -111,7 +110,6 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
 
       CloseCart: ({state}, data, {params}) =>{
         if(!state) return Async.Rejected(createError(CartErrors.CartDoesNotExist, [params.id]))
-        console.log(state.products)
         if(!state.products)  return Async.Rejected(createError(CartErrors.EmptyCart, [params.id])) //TODO: No funciona el isNil??
         // return u.safeAsync(isNil, state.products)
         // .bimap(constant(createError(CartErrors.EmptyCart, [params.id])), u.I)

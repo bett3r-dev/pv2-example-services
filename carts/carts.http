@@ -1,5 +1,6 @@
 ### Create Cart
-POST http://localhost:1984/carts/fd0d777e-1a8d-46f2-8c8f-9dd8918aafd6/create-user-cart
+POST http://localhost:1984/carts/14f3d786-547d-453d-8e64-4f641977f277/create-user-cart
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvbWFzcnVpenIiLCJpYXQiOjE2NTQzNjI2MjAsImV4cCI6MTY1NDQ0OTAyMH0.iSp5ruvPnclV5M0TiSkyZrkoUuehiJDtq8VXi7fFzCg3K2QHrHCNYUG8JISqem41mnPSVV5kZ69anGXtskVLNw
 Content-Type: application/json
 
 {

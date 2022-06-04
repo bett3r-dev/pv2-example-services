@@ -85,7 +85,6 @@ describe( 'UserPaymentProjector', function() {
           amount: 100,
       }, {id: "6ed258fe-4e88-4e8c-8e53-e11e8635ccec"})
       .map(() => {
-         console.log(mockState)
         assert.equal(mockState.length, 1);
         // assert.deepNestedInclude(mockState[0], {'userpaymentreadmodel'});
       })
@@ -132,7 +131,6 @@ describe( 'UserPaymentProjector', function() {
     ])
       .when(PaymentEvents.PaymentApproved,{cartId: "6ed258fe-4e88-4e8c-8e53-e11e8635ccec"}, {id: "6ed258fe-4e88-4e8c-8e53-e11e8635ccec"})
       .map(() => {
-         console.log(mockState)
         assert.equal(mockState.length, 1);
         // assert.deepNestedInclude(mockState[0], {'userpaymentreadmodel'});
       })
@@ -179,7 +177,6 @@ describe( 'UserPaymentProjector', function() {
     ])
       .when(PaymentEvents.PaymentRejected,{cartId: "6ed258fe-4e88-4e8c-8e53-e11e8635ccec", reason: "reason"}, {id: "6ed258fe-4e88-4e8c-8e53-e11e8635ccec"})
       .map(() => {
-         console.log(mockState)
         assert.equal(mockState.length, 1);
         // assert.deepNestedInclude(mockState[0], {'userpaymentreadmodel'});
       })

@@ -35,7 +35,7 @@ export type FilterRoleParams = Partial<{
 
 export const authorizeUsersActions = (eventsourcing: EventSourcingManager, configStream: flyd.Stream<AuthorizationConfig>) => (username:string, user:UserAuthorization) => {
   if (username !== user.username && !user.resources.UsersRoles)
-    return Async.Rejected(createError(UnauthorizedError))
+    return Async.Rejected(createError(UnauthorizedError, null))
   return eventsourcing.loadStream(UsersAuthorizationSystem, {direction: 'backwards', limit: 1, from: 'end'})(username)
     .chain(users => users.length ? Async.of(users[0]) : Async.Rejected(createError(UnauthorizedError, 'User Does Not Exists')))
     .chain((userAuthorization: UserAuthorization) => {
@@ -44,7 +44,7 @@ export const authorizeUsersActions = (eventsourcing: EventSourcingManager, confi
         configStream().useTenants && 
         userAuthorization && 
         !userAuthorization.tenants.some(t => user.tenants.includes(t))
-      ) return Async.Rejected(createError(UnauthorizedError))
+      ) return Async.Rejected(createError(UnauthorizedError, null))
       return Async.of(userAuthorization);
     })
 }
@@ -54,7 +54,7 @@ export const authorizeRolesActions = (configStream: flyd.Stream<AuthorizationCon
     (configStream().useTenants && (!queryOrBody.tenant) && user?.resources?.tenants !== true) ||
     (configStream().useScopes && (!queryOrBody.scope) && user?.resources?.scopes !== true)
   )
-    return Async.Rejected(createError(UnauthorizedError))
+    return Async.Rejected(createError(UnauthorizedError, null))
   return Async.of(queryOrBody);
 }
 

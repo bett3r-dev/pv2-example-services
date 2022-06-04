@@ -69,7 +69,6 @@ describe( 'UserCartProjector', function() {
         quantity: 2
       }, {id:"6ed258fe-4e88-4e8c-8e53-e11e8635ccec"})
       .map(() => {
-        console.log('aver', mockState[0])
         assert.equal(mockState.length, 1);
         // assert.deepNestedInclude(mockState[0], {
         //   sku: "sku",

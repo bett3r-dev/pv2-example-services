@@ -14,10 +14,10 @@ export function create(params: AppServiceParams) {
     route: '/users/:id',
     method: 'GET',
     isHttp: true,
-    action: ({ params }) =>
-      mongo.getCollection('users').read({id: params.id})
-      .map(x=> { console.log('PASO POR EL GET', x); return x; })
+    action: ({ params }) =>{
+      return mongo.getCollection('users').read({id: params.id})
         .map(arr => arr[0])
+    }
   })
 
   endpoint.registerEndpoint({
@@ -53,7 +53,6 @@ export function create(params: AppServiceParams) {
     isHttp: true,
     action: ({ params }) =>
       mongo.getCollection('users').destroy({id: params.id})
-       .map(x=> { console.log('PASO POR EL DELETE', x); return x; })
         .map(constant(params.id))
   })
 

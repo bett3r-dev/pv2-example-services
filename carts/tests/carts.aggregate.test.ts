@@ -145,7 +145,6 @@ describe('CartsAggregate', () => {
       .then({events:[], state:{}})
       .coalesce(u.I, done)
       .map((err) => {
-        console.log('el errrorrr', err)
         expect(err[0]['ProductOutOfStock']).toBeInstanceOf(Error);
         expect(Object.keys(err[0])[0]).toEqual('ProductOutOfStock');
         expect(err[0]['ProductOutOfStock'].data).toEqual(['5fec5b18-2b43-4383-9cfe-52e71d192d46'])
@@ -168,7 +167,6 @@ describe('CartsAggregate', () => {
       .then({events:[], state:{}})
       .coalesce(u.I, done)
       .map((err) => {
-        console.log('el error', err)
         expect(err).toBeInstanceOf(Error);
         expect(err.name).toEqual('ProductDoesNotExist');
         expect(err.data).toEqual(['f8744f7f-6ab3-4325-a233-f336cd1680c1'])

@@ -203,7 +203,6 @@ describe('ProductsAggregate', () => {
       .then({events:[], state:{}})
       .coalesce(u.I, done)
       .map((err) => {
-        console.log('err', err)
         expect(err).toBeInstanceOf(Error);
         expect(err.name).toEqual('ProductDoesNotExist');
         expect(err.data).toEqual(['3e148424-01f5-4aba-b633-eb95f1e7902b'])
@@ -239,7 +238,6 @@ describe('ProductsAggregate', () => {
       .then({events:[], state:{}})
       .coalesce(u.I, done)
       .map((err) => {
-        console.log('err', err)
         expect(err).toBeInstanceOf(Error);
         expect(err.name).toEqual('ProductDoesNotExist');
         expect(err.data).toEqual(['3e148424-01f5-4aba-b633-eb95f1e7902b'])
