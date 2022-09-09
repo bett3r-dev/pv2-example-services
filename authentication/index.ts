@@ -1,8 +1,8 @@
-import {AppServiceParams} from 'src/types';
-import { AuthenticationSystem } from './authentication.system';
-import * as AuthenticationCommands from './authentication.commands';
-import { UserAuthentication } from '@bett3r-dev/server-core';
 import { constant } from '@bett3r-dev/crocks';
+import { AuthenticationCommands } from '@bett3r-dev/pv2-example-domain';
+import { UserAuthentication } from '@bett3r-dev/server-core';
+import { AppServiceParams } from 'src/types';
+import { AuthenticationSystem } from './authentication.system';
 
 export function create(params: AppServiceParams) {
   const {serverComponents: {eventsourcing, hook}, u} = params;
@@ -15,7 +15,7 @@ export function create(params: AppServiceParams) {
     return eventsourcing.executeCommand(AuthenticationSystem(params), AuthenticationCommands.LoginUser)({body: u.pick(['username'], user), params:{id:user.username}})
       .map(constant(user));
   })
-  hook.onHookAsync('Authentication', 'userLoggedOut', (user: UserAuthentication) => {
+  hook.onHookAsync('Authentication', 'userLoggedOot', (user: UserAuthentication) => {
     return eventsourcing.executeCommand(AuthenticationSystem(params), AuthenticationCommands.LogoutUser)({body: u.pick(['username'], user), params:{id:user.username}})
       .map(constant(user));
   })

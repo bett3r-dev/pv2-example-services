@@ -1,8 +1,7 @@
 import { System } from '@bett3r-dev/server-core';
 import { Async } from '@bett3r-dev/crocks';
 import { AppServiceParams } from 'src/types';
-import * as AuthenticationCommands from './authentication.commands';
-import * as AuthenticationEvents from './authentication.events';
+import {AuthenticationCommands, AuthenticationEvents} from '@bett3r-dev/pv2-example-domain';
 
 export const AuthenticationSystem = ({serverComponents, u}: AppServiceParams) : System<typeof AuthenticationCommands, typeof AuthenticationEvents> => {
   const {eventsourcing:{createEvent}} = serverComponents;
@@ -11,11 +10,11 @@ export const AuthenticationSystem = ({serverComponents, u}: AppServiceParams) : 
     name: 'Authentication',
     isStreamable: true,
     commandHandlers: {
-      RegisterUser: (data) =>
+      RegisterUser: (state, data) =>
         Async.of([createEvent(AuthenticationEvents.UserRegistered, data)]),
-      LoginUser: (data) =>
+      LoginUser: (state, data) =>
         Async.of([createEvent(AuthenticationEvents.UserLoggedIn, data)]),
-      LogoutUser: (data) =>
+      LogoutUser: (state, data) =>
         Async.of([createEvent(AuthenticationEvents.UserLoggedOut, data)]), 
     }
   })

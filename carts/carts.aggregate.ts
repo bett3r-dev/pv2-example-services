@@ -60,7 +60,7 @@ export const CartsAggregate = ({serverComponents, u}: AppServiceParams) : Aggreg
       CartClosed: (state) => ({...state, isClosed: true}),
     },
     commandHandlers: {
-      CreateUserCart: (state, data, {params}) =>{
+      CreateUserCart: (state, data, {params,context:{user}}) =>{
         if (!data.userId) return Async.Rejected(createError(UserErrors.UserDoesNotExist, null))
         return u.safeAsync(isEmpty, state)
           .bimap(constant(createError(CartErrors.CartAlreadyExist, [params.id])), u.I)
