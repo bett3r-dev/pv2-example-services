@@ -12,9 +12,9 @@ export const Authorization = ({serverComponents, configStream, u}: Authorization
       UserAuthorizationUpserted: (state, data) =>  u.mergeDeepRight(state || {}, data),
     },
     commandHandlers: {
-      UpsertUserAuthorization: (state, data, {context: {user}}) => 
-        authorizeUsersActions(eventsourcing, configStream)(data.username, user)
-          .map(constant([eventsourcing.createEvent(AuthorizationEvents.UserAuthorizationUpserted, data)])),
+      UpsertUserAuthorization: (state, data, {params, context: {user}}) => 
+        authorizeUsersActions(eventsourcing, configStream)(params.id, user)
+          .map(constant([eventsourcing.createEvent(AuthorizationEvents.UserAuthorizationUpserted, {...data, username: params.id})])),
     }   
   })
 }

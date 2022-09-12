@@ -29,13 +29,13 @@ export const authorizeUsersActions = (eventsourcing: EventSourcingManager, confi
   if (username !== user.username && !user.resources.UsersRoles)
     return Async.Rejected(createError(UnauthorizedError, null))
   return eventsourcing.loadStream(Authorization, {direction: 'backwards', limit: 1, from: 'end'})(username)
-    .chain(users => users.length ? Async.of(users[0]) : Async.Rejected(createError(UnauthorizedError, 'User Does Not Exists')))
+    // .chain(users => users.length ? Async.of(users[0]) : Async.Rejected(createError(UnauthorizedError, 'User Does Not Exists')))
     .chain((userAuthorization: UserAuthorization) => {
       if (
         username !== user.username && 
         configStream().useTenants && 
-        userAuthorization && 
-        !userAuthorization.tenants.some(t => user.tenants.includes(t))
+        userAuthorization && Object.keys(userAuthorization).length && userAuthorization.tenants &&
+        !userAuthorization?.tenants?.some(t => user.tenants.includes(t))
       ) return Async.Rejected(createError(UnauthorizedError, null))
       return Async.of(userAuthorization);
     })
@@ -71,10 +71,12 @@ export const getUserAuthorization =
 export const coerceUserPermissions = 
 (mongo: MongoDatabaseProvider, rolesCollection: string, mongoInstance: string) => 
 (userAuthorization: UserAuthorization) => {
-  return !userAuthorization.roles ? Async.of(userAuthorization) : getRoles(mongo, rolesCollection, mongoInstance)(userAuthorization.roles)
-  .map((roles: Role[]) => mergeAll(roles.map(r=>r.permissions)))
-  .map(rolesPermissions => Object.assign(rolesPermissions, userAuthorization.permissions || {}))
-  .map(permissions => assoc('permissions', permissions, userAuthorization))
+  return !userAuthorization.roles 
+  ? Async.of(userAuthorization) 
+  : getRoles(mongo, rolesCollection, mongoInstance)(userAuthorization.roles)
+      .map((roles: Role[]) => mergeAll(roles.map(r=>r.permissions)))
+      .map(rolesPermissions => Object.assign(rolesPermissions, userAuthorization.permissions || {}))
+      .map(permissions => assoc('permissions', permissions, userAuthorization))
 }
 
 export function create(params: AuthorizationServiceParams) {
@@ -91,7 +93,7 @@ export function create(params: AuthorizationServiceParams) {
     ], AuthenticationEvents)
   });
 
-  hook.onHook('http', 'onRegisterHttpEndpoint', 1001, (endpoint: Endpoint) => {
+  hook.onHook('http', 'onRegisterHttpEndpoint', 1002, (endpoint: Endpoint) => {
     if (endpoint.requiresAuth === true){
       endpoint.action = pipeK(
         authorization.authorizeRequest,

@@ -16,7 +16,7 @@ export const AuthorizationRoles = ({serverComponents, configStream, u}: Authoriz
     commandHandlers: {
       UpsertRole: (state, data, {context: {user}}) => {
         return authorizeRolesActions(configStream)(data, user)
-          .map(constant([createEvent(AuthorizationEvents.RoleUpserted, data)]))
+          .map(constant([createEvent(AuthorizationEvents.RoleUpserted, {scope: 'default', tenant: 'default',  ...data})]))
       }
     }
   })

@@ -26,6 +26,7 @@ export const UsersAuthorization = (params: AuthorizationServiceParams) : Project
       UserLoggedIn: (event) =>
         mongo.getCollection(configStream().mongo.usersCollection, configStream().mongo.instance)
           .read({username: event.data.username})
+          .map(users => users[0])
           .chain(setCoercedPermissionsInCache(event.data.username))
           .map(u.noop),
       
@@ -36,11 +37,11 @@ export const UsersAuthorization = (params: AuthorizationServiceParams) : Project
         const collection = mongo.getCollection(configStream().mongo.usersCollection, configStream().mongo.instance);
         return collection  
           .read({username: event.data.username})
-          .map((userAuthorization: UserAuthorization) => u.mergeDeepRight(userAuthorization || {}, event.data))
-          .chain((userAuthorization: UserAuthorization) => 
-            collection.upsert({username: event.data.username}, userAuthorization)
+          .map((userAuthorization: UserAuthorization[]) => u.mergeDeepRight(userAuthorization[0] || {}, event.data))
+          .chain((userAuthorization: UserAuthorization) => {
+            return collection.upsert({username: event.data.username}, {$set: userAuthorization})
               .map(constant(userAuthorization))
-          )
+          })
           .map((userAuthorization: UserAuthorization) => {
             cache.get(`user-authorization:${userAuthorization}`)
               .chain(u.safeAsync(isDefined))
